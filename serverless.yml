@@ -1,0 +1,88 @@
+service: lets-delivery-customers
+frameworkVersion: "3.36.0"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  region: us-east-1
+  profile: lets-delivery
+  environment:
+    AWS_REGION_ENV: ${env.AWS_REGION_ENV}
+    DYNAMODB_ENDPOINT: ${env.DYNAMODB_ENDPOINT}
+    ACCESS_KEY_ID: ${env.ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env.SECRET_ACCESS_KEY}
+    IS_OFFLINE: ${env.IS_OFFLINE}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+            - "dynamodb:UpdateItem"
+          Resource:
+            - { "Fn::GetAtt": ["CustomerTable", "Arn"] }
+        - Effect: Allow
+          Action:
+            - iam:PassRole
+          Resource: "*"
+functions:
+  createCustomer:
+    handler: src/handlers/customer-handler.createCustomer
+    events:
+      - httpApi:
+          path: /customer
+          method: post
+  getCustomer:
+    handler: src/handlers/customer-handler.getCustomer
+    events:
+      - httpApi:
+          path: /customer/{id}
+          method: get
+  updateCustomer:
+    handler: src/handlers/customer-handler.updateCustomer
+    events:
+      - httpApi:
+          path: /customer/{id}
+          method: put
+  deleteCustomer:
+    handler: src/handlers/customer-handler.deleteCustomer
+    events:
+      - httpApi:
+          path: /customer/{id}
+          method: delete
+  listCustomers:
+    handler: src/handlers/customer-handler.listCustomers
+    timeout: 30 #
+    events:
+      - httpApi:
+          path: /customer
+          method: get
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+resources:
+  Resources:
+    CustomerTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: CustomerTable
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+package:
+  patterns:
+    - "!.git/**"
+    - "!test/**"

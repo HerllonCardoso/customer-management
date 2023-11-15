@@ -1,0 +1,10 @@
+export const CREATE_CUSTOMER_FIELDS_IS_REQUIRED_ERROR_MESSAGE = "Please fill in all fields correctly.";
+export const CREATE_CUSTOMER_FIELDS_IS_INVALID_ERROR_MESSAGE = "Invalid field(s)";
+export const GENERAL_GET_CUSTOMER_ERROR_MESSAGE = "An error occurred while fetching the user";
+export const GENERAL_UPDATE_CUSTOMER_ERROR_MESSAGE = "An error occurred while updating the user";
+export const GENERAL_DELETE_CUSTOMER_ERROR_MESSAGE = "An error occurred while deleting the user";
+export const GENERAL_CREATE_CUSTOMER_ERROR_MESSAGE = "An error occurred while creating the user";
+export const INVALID_REQUEST_BODY_ERROR_MESSAGE = "There was an error with the request, please try again";
+export const CUSTOMER_NOT_FOUND = "Customer not found";
+export const CUSTOMER_UPDATED = "Customer updated";
+export const NO_CUSTOMER_WAS_FOUND = "No customer was found";
